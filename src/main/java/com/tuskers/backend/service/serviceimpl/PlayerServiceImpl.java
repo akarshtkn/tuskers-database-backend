@@ -5,6 +5,8 @@ import com.tuskers.backend.enums.District;
 import com.tuskers.backend.repository.PlayerRepository;
 import com.tuskers.backend.service.PlayerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -39,13 +41,29 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<Player> getAllPlayers() {
-        return playerRepository.findAll();
+    public Page<Player> getAllPlayers(Pageable pageable) {
+        return playerRepository.findAll(pageable);
     }
 
     @Override
-    public List<Player> getPlayersByUsername(String filter) {
-        return playerRepository.filterByUsername(filter);
+    public Page<Player> getPlayersByUsername(String filter, Pageable pageable) {
+        return playerRepository.filterByUsername(filter, pageable);
+    }
+
+    @Override
+    public Page<Player> getPlayersByDistrict(District district, Pageable pageable) {
+        if(!Arrays.asList(District.values()).contains(district)){
+            throw new IllegalArgumentException("Invalid district selected : " + district);
+        }
+        return playerRepository.filterByDistrict(district, pageable);
+    }
+
+    @Override
+    public Page<Player> getPlayersByUsernameAndDistrict(String filter, District district, Pageable pageable) {
+        if(!Arrays.asList(District.values()).contains(district)){
+            throw new IllegalArgumentException("Invalid district selected : " + district);
+        }
+        return playerRepository.filterByUsernameAndDistrict(filter, district, pageable);
     }
 
     @Override

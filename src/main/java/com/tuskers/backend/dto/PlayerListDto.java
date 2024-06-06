@@ -1,23 +1,21 @@
 package com.tuskers.backend.dto;
 
+import com.tuskers.backend.enums.District;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlayerResponseDto {
+public class PlayerListDto {
+    private Integer id;
 
-    private List<PlayerListDto> players;
+    private String username;
 
-    private long numberOfPlayers;
+    private String gameId;
 
-    private int currentPage;
-
-    private int totalPages;
+    private District district;
 }

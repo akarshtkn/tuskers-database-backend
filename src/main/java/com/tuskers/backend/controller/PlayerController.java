@@ -1,13 +1,15 @@
 package com.tuskers.backend.controller;
 
-import com.tuskers.backend.dto.CreatePlayerRequestDto;
-import com.tuskers.backend.dto.CreatePlayerResponseDto;
-import com.tuskers.backend.dto.PlayerResponseDto;
-import com.tuskers.backend.dto.UpdatePlayerRequestDto;
+import com.tuskers.backend.dto.*;
 import com.tuskers.backend.entity.Player;
+import com.tuskers.backend.enums.District;
 import com.tuskers.backend.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class PlayerController {
     private final PlayerService playerService;
     private final ModelMapper modelMapper;
 
-    @PostMapping("/create")
+    @PostMapping("/add")
     public ResponseEntity<CreatePlayerResponseDto> createPlayer(@RequestBody CreatePlayerRequestDto request) {
         Player createdPlayer = playerService.createPlayer(request.getUsername(), request.getGameId(),
                 request.getDistrict());
@@ -41,17 +43,49 @@ public class PlayerController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<PlayerResponseDto>> getPlayers(@RequestParam(required = false) String filter) {
-        List<Player> players = new ArrayList<>();
-        if(filter == null || filter.isBlank()){
-            players = playerService.getAllPlayers();
-        } else{
-            players = playerService.getPlayersByUsername(filter);
+    public ResponseEntity<PlayerResponseDto> getPlayers(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "8") Integer pageSize,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String district) {
+
+        Page<Player> players;
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("username").ascending());
+        District districtEnum = null;
+
+        if (district.equals("ALL") || district.isBlank() || "undefined".equalsIgnoreCase(district)) {
+            district = null;
         }
-        List<PlayerResponseDto> playerResponseDtoList = players.stream()
-                .map(player -> modelMapper.map(player, PlayerResponseDto.class))
+
+        if (district!=null){
+            try {
+                districtEnum = District.valueOf(district);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid district selected : " + district);
+            }
+        }
+
+        if(filter == null || filter.isBlank()){
+            if(district == null){
+                players = playerService.getAllPlayers(pageable);
+            }else {
+                players = playerService.getPlayersByDistrict(districtEnum, pageable);
+            }
+        }else{
+            if(district == null){
+                players = playerService.getPlayersByUsername(filter, pageable);
+            }else {
+                players = playerService.getPlayersByUsernameAndDistrict(filter, districtEnum, pageable);
+            }
+        }
+
+        List<PlayerListDto> playerListDto = players.stream()
+                .map(player -> modelMapper.map(player, PlayerListDto.class))
                 .toList();
-        return new ResponseEntity<>(playerResponseDtoList, HttpStatus.OK);
+
+        return new ResponseEntity<>(
+                new PlayerResponseDto(playerListDto, players.getTotalElements(),
+                        players.getNumber(), players.getTotalPages() ), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
