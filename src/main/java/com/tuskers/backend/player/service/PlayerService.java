@@ -1,11 +1,9 @@
-package com.tuskers.backend.service;
+package com.tuskers.backend.player.service;
 
-import com.tuskers.backend.entity.Player;
-import com.tuskers.backend.enums.District;
+import com.tuskers.backend.player.entity.Player;
+import com.tuskers.backend.player.enums.District;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface PlayerService {
     Player createPlayer(String username, String gameId, District district);
@@ -21,4 +19,8 @@ public interface PlayerService {
     Page<Player> getPlayersByUsernameAndDistrict(String filter, District district, Pageable pageable);
 
     void deletePlayer(Integer playerId);
+
+    Boolean checkUsernameAlreadyExist(String username);
+
+    Boolean checkForDuplicateGameId(String gameId);
 }

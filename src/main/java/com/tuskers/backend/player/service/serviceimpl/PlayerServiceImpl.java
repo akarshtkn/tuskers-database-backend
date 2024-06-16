@@ -1,16 +1,15 @@
-package com.tuskers.backend.service.serviceimpl;
+package com.tuskers.backend.player.service.serviceimpl;
 
-import com.tuskers.backend.entity.Player;
-import com.tuskers.backend.enums.District;
-import com.tuskers.backend.repository.PlayerRepository;
-import com.tuskers.backend.service.PlayerService;
+import com.tuskers.backend.player.entity.Player;
+import com.tuskers.backend.player.enums.District;
+import com.tuskers.backend.player.repository.PlayerRepository;
+import com.tuskers.backend.player.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +70,16 @@ public class PlayerServiceImpl implements PlayerService {
         playerRepository.findById(playerId)
                 .orElseThrow(() -> new RuntimeException("No player exist with player_id : " + playerId));
         playerRepository.deleteById(playerId);
+    }
+
+    @Override
+    public Boolean checkUsernameAlreadyExist(String username) {
+        return playerRepository.countByUsername(username) != 0;
+    }
+
+    @Override
+    public Boolean checkForDuplicateGameId(String gameId) {
+        return playerRepository.countByGameId(gameId) != 0;
     }
 
 }

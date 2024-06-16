@@ -1,6 +1,6 @@
-package com.tuskers.backend.entity;
+package com.tuskers.backend.player.entity;
 
-import com.tuskers.backend.enums.Tournament;
+import com.tuskers.backend.player.enums.Tournament;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

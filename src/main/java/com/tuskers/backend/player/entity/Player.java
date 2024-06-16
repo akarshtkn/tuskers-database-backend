@@ -1,6 +1,6 @@
-package com.tuskers.backend.entity;
+package com.tuskers.backend.player.entity;
 
-import com.tuskers.backend.enums.District;
+import com.tuskers.backend.player.enums.District;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

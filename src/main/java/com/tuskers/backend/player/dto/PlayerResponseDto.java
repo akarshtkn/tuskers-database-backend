@@ -1,4 +1,4 @@
-package com.tuskers.backend.dto;
+package com.tuskers.backend.player.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

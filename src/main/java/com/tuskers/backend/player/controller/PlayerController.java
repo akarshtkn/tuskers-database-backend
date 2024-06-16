@@ -1,10 +1,12 @@
-package com.tuskers.backend.controller;
+package com.tuskers.backend.player.controller;
 
-import com.tuskers.backend.dto.*;
-import com.tuskers.backend.entity.Player;
-import com.tuskers.backend.enums.District;
-import com.tuskers.backend.service.PlayerService;
+import com.tuskers.backend.player.dto.*;
+import com.tuskers.backend.player.entity.Player;
+import com.tuskers.backend.player.enums.District;
+import com.tuskers.backend.player.service.PlayerService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -32,6 +33,16 @@ public class PlayerController {
                 request.getDistrict());
         CreatePlayerResponseDto playerDto = modelMapper.map(createdPlayer, CreatePlayerResponseDto.class);
         return new ResponseEntity<>(playerDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/add/check")
+    public ResponseEntity<Boolean> checkDuplicateUsername(@RequestParam(required = false) String username,
+                                                          @RequestParam(required = false) String gameId) {
+        if (username == null || username.isBlank()) {
+            return new ResponseEntity<>(playerService.checkForDuplicateGameId(gameId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(playerService.checkUsernameAlreadyExist(username), HttpStatus.OK);
+        }
     }
 
     @PutMapping("/update")

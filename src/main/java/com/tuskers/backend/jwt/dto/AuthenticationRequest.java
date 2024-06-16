@@ -1,6 +1,5 @@
-package com.tuskers.backend.dto;
+package com.tuskers.backend.jwt.dto;
 
-import com.tuskers.backend.enums.District;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlayerListDto {
-    private Integer id;
-
+public class AuthenticationRequest {
     private String username;
-
-    private String gameId;
-
-    private District district;
+    private String password;
 }

@@ -1,6 +1,6 @@
-package com.tuskers.backend.dto;
+package com.tuskers.backend.player.dto;
 
-import com.tuskers.backend.enums.District;
+import com.tuskers.backend.player.enums.District;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
