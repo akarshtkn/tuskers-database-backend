@@ -74,11 +74,28 @@ public class AuthenticationController {
         ResponseCookie cookie = ResponseCookie.from("token", token)
                 .httpOnly(true)
                 .secure(false)
-                .path("/api/v1")
+                .path("/")
                 .maxAge(cookieExpiry)
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return new ResponseEntity<>(authenticationService.mappingResponse(user), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        logger.info("Logout endpoint");
+
+        ResponseCookie cookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        logger.info("Cookie cleared");
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PlayerService {
-    Player createPlayer(String username, String gameId, District district);
+    Player addPlayer(String username, String gameId, District district);
 
     Player updatePlayer(Integer playerId, String gameId, District district);
 

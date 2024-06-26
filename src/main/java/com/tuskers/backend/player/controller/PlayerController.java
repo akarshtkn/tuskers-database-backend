@@ -8,6 +8,8 @@ import com.tuskers.backend.player.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,17 +29,31 @@ public class PlayerController {
     private final PlayerService playerService;
     private final ModelMapper modelMapper;
 
+    Logger logger = LoggerFactory.getLogger(PlayerController.class);
+
     @PostMapping("/add")
-    public ResponseEntity<CreatePlayerResponseDto> createPlayer(@RequestBody CreatePlayerRequestDto request) {
-        Player createdPlayer = playerService.createPlayer(request.getUsername(), request.getGameId(),
+    public ResponseEntity<PlayerResponse> addPlayer(@RequestBody PlayerRequest request) {
+        logger.info("Add player endpoint");
+        Player newPlayer = playerService.addPlayer(request.getUsername(), request.getGameId(),
                 request.getDistrict());
-        CreatePlayerResponseDto playerDto = modelMapper.map(createdPlayer, CreatePlayerResponseDto.class);
+
+        logger.info("Player created with id : {}", newPlayer.getId());
+        logger.info("Executing business logic to map the Player to PlayerResponse");
+        PlayerResponse playerDto = modelMapper.map(newPlayer, PlayerResponse.class);
         return new ResponseEntity<>(playerDto, HttpStatus.CREATED);
     }
 
-    @PostMapping("/add/check")
-    public ResponseEntity<Boolean> checkDuplicateUsername(@RequestParam(required = false) String username,
+    @PostMapping("/check")
+    public ResponseEntity<Object> checkDuplicateUsername(@RequestParam(required = false) String username,
                                                           @RequestParam(required = false) String gameId) {
+        logger.info("Executing business logic to check for duplicates");
+
+        if ((username == null || username.isBlank()) && (gameId == null || gameId.isBlank())) {
+            logger.warn("Neither username nor gameId provided");
+            return new ResponseEntity<>("Either 'username' or 'gameId' must be provided", HttpStatus.BAD_REQUEST);
+        }
+
+        logger.info("Executing business logic to check which field is present, username or gameId");
         if (username == null || username.isBlank()) {
             return new ResponseEntity<>(playerService.checkForDuplicateGameId(gameId), HttpStatus.OK);
         } else {
@@ -46,10 +62,10 @@ public class PlayerController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<CreatePlayerResponseDto> updatePlayer(@RequestParam(required = true) Integer playerId,
-                                                                @RequestBody UpdatePlayerRequestDto request) {
+    public ResponseEntity<PlayerResponse> updatePlayer(@RequestParam(required = true) Integer playerId,
+                                                       @RequestBody UpdatePlayerRequestDto request) {
         Player updatedPlayer = playerService.updatePlayer(playerId, request.getGameId(), request.getDistrict());
-        CreatePlayerResponseDto playerDto = modelMapper.map(updatedPlayer, CreatePlayerResponseDto.class);
+        PlayerResponse playerDto = modelMapper.map(updatedPlayer, PlayerResponse.class);
         return new ResponseEntity<>(playerDto, HttpStatus.OK);
     }
 

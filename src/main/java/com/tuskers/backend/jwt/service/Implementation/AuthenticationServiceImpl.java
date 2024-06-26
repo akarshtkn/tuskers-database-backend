@@ -112,8 +112,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse mappingResponse(User user) {
         logger.info("Executing business logic to map User to AuthenticationResponse class");
         return AuthenticationResponse.builder()
-                .id(user.getId())
                 .username(user.getUsername())
+                .name(user.getName())
+                .role(user.getRole())
                 .build();
     }
 

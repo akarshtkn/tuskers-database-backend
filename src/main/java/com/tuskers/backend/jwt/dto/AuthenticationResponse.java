@@ -1,5 +1,6 @@
 package com.tuskers.backend.jwt.dto;
 
+import com.tuskers.backend.jwt.enums.Role;
 import lombok.*;
 
 @Getter
@@ -8,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class AuthenticationResponse {
-    private Integer id;
     private String username;
+    private String name;
+    private Role role;
 }

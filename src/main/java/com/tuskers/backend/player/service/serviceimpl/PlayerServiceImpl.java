@@ -1,10 +1,13 @@
 package com.tuskers.backend.player.service.serviceimpl;
 
+import com.tuskers.backend.player.controller.PlayerController;
 import com.tuskers.backend.player.entity.Player;
 import com.tuskers.backend.player.enums.District;
 import com.tuskers.backend.player.repository.PlayerRepository;
 import com.tuskers.backend.player.service.PlayerService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,12 +20,19 @@ public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
 
+    Logger logger = LoggerFactory.getLogger(PlayerServiceImpl.class);
+
     @Override
-    public Player createPlayer(String username, String gameId, District district) {
+    public Player addPlayer(String username, String gameId, District district) {
+        logger.info("Executing business logic to add a player");
+        logger.info("Executing business logic to validate the field district");
         if(!Arrays.asList(District.values()).contains(district)){
             throw new IllegalArgumentException("Invalid district selected : " + district);
         }
+
         Player player = new Player(username, gameId, district);
+
+        logger.info("Saving player to repository");
         return playerRepository.save(player);
     }
 
@@ -74,11 +84,13 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Boolean checkUsernameAlreadyExist(String username) {
+        logger.info("Executing business logic to check for duplicate Username");
         return playerRepository.countByUsername(username) != 0;
     }
 
     @Override
     public Boolean checkForDuplicateGameId(String gameId) {
+        logger.info("Executing business logic to check for duplicate Game Id");
         return playerRepository.countByGameId(gameId) != 0;
     }
 

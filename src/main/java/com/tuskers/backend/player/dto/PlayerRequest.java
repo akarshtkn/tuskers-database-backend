@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePlayerRequestDto {
+public class PlayerRequest {
 
     @NotBlank(message = "username should not be blank")
     private String username;
@@ -19,5 +19,6 @@ public class CreatePlayerRequestDto {
     @NotBlank(message = "game id should not be blank")
     private String gameId;
 
+    @NotBlank(message = "district should not be blank")
     private District district;
 }
