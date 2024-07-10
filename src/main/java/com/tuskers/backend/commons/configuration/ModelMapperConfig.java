@@ -1,4 +1,4 @@
-package com.tuskers.backend.configuration;
+package com.tuskers.backend.commons.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

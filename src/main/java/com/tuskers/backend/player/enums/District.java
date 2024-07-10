@@ -15,6 +15,6 @@ public enum District {
     WAYANAD,
     KANNUR,
     KASARAGOD,
-    OTHERS_IN_INDIA,
+    OUTSIDE_KERALA,
     OUTSIDE_INDIA;
 }

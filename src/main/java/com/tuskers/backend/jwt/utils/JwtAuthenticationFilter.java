@@ -1,4 +1,4 @@
-package com.tuskers.backend.jwt.configuration;
+package com.tuskers.backend.jwt.utils;
 
 import com.tuskers.backend.jwt.service.JwtService;
 import jakarta.annotation.Nonnull;

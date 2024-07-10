@@ -1,5 +1,6 @@
 package com.tuskers.backend.player.service.serviceimpl;
 
+import com.tuskers.backend.commons.exceptions.BadRequestException;
 import com.tuskers.backend.player.controller.PlayerController;
 import com.tuskers.backend.player.entity.Player;
 import com.tuskers.backend.player.enums.District;
@@ -27,7 +28,7 @@ public class PlayerServiceImpl implements PlayerService {
         logger.info("Executing business logic to add a player");
         logger.info("Executing business logic to validate the field district");
         if(!Arrays.asList(District.values()).contains(district)){
-            throw new IllegalArgumentException("Invalid district selected : " + district);
+            throw new BadRequestException("Invalid district selected, value = " + district);
         }
 
         Player player = new Player(username, gameId, district);

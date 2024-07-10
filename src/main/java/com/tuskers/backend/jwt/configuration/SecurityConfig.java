@@ -1,5 +1,7 @@
 package com.tuskers.backend.jwt.configuration;
 
+import com.tuskers.backend.jwt.utils.JwtAuthenticationEntryPoint;
+import com.tuskers.backend.jwt.utils.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,7 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     private final static String[] WHITE_URL = {
             "/api/v1/auth/register/super-admin",
@@ -47,6 +50,8 @@ public class SecurityConfig {
                             .requestMatchers(SUPER_ADMINS_URL).hasAnyAuthority("SUPER_ADMIN")
                             .requestMatchers(ADMINS_URL).hasAnyAuthority("ADMIN")
                             .anyRequest().authenticated())
+            .exceptionHandling(exception ->
+                    exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
