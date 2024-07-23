@@ -15,7 +15,7 @@ public class PlayerResponseDto {
 
     private List<PlayerListDto> players;
 
-    private long numberOfPlayers;
+    private long totalPlayers;
 
     private int currentPage;
 

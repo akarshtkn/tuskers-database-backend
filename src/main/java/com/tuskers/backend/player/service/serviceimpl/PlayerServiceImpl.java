@@ -62,17 +62,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Page<Player> getPlayersByDistrict(District district, Pageable pageable) {
-        if(!Arrays.asList(District.values()).contains(district)){
-            throw new IllegalArgumentException("Invalid district selected : " + district);
-        }
         return playerRepository.filterByDistrict(district, pageable);
     }
 
     @Override
     public Page<Player> getPlayersByUsernameAndDistrict(String filter, District district, Pageable pageable) {
-        if(!Arrays.asList(District.values()).contains(district)){
-            throw new IllegalArgumentException("Invalid district selected : " + district);
-        }
         return playerRepository.filterByUsernameAndDistrict(filter, district, pageable);
     }
 

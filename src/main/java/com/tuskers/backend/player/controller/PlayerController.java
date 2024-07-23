@@ -1,5 +1,6 @@
 package com.tuskers.backend.player.controller;
 
+import com.tuskers.backend.commons.exceptions.BadRequestException;
 import com.tuskers.backend.player.dto.*;
 import com.tuskers.backend.player.entity.Player;
 import com.tuskers.backend.player.enums.District;
@@ -73,14 +74,15 @@ public class PlayerController {
     public ResponseEntity<PlayerResponseDto> getPlayers(
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "8") Integer pageSize,
-            @RequestParam(required = false) String filter,
-            @RequestParam(required = false) String district) {
+            @RequestParam(required = false) String username,
+            @RequestParam(defaultValue = "ALL") String district) {
 
+        logger.info("Invoking player get function");
         Page<Player> players;
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("username").ascending());
         District districtEnum = null;
 
-        if (district.equals("ALL") || district.isBlank() || "undefined".equalsIgnoreCase(district)) {
+        if (district.equals("ALL")) {
             district = null;
         }
 
@@ -88,11 +90,11 @@ public class PlayerController {
             try {
                 districtEnum = District.valueOf(district);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid district selected : " + district);
+                throw new BadRequestException("Invalid district selected : " + district);
             }
         }
 
-        if(filter == null || filter.isBlank()){
+        if(username == null || username.isBlank()){
             if(district == null){
                 players = playerService.getAllPlayers(pageable);
             }else {
@@ -100,9 +102,9 @@ public class PlayerController {
             }
         }else{
             if(district == null){
-                players = playerService.getPlayersByUsername(filter, pageable);
+                players = playerService.getPlayersByUsername(username, pageable);
             }else {
-                players = playerService.getPlayersByUsernameAndDistrict(filter, districtEnum, pageable);
+                players = playerService.getPlayersByUsernameAndDistrict(username, districtEnum, pageable);
             }
         }
 
@@ -116,7 +118,7 @@ public class PlayerController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<HttpStatus> deletePlayer(@RequestParam(required = true) Integer playerId) {
+    public ResponseEntity<Void> deletePlayer(@RequestParam(required = true) Integer playerId) {
         playerService.deletePlayer(playerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
