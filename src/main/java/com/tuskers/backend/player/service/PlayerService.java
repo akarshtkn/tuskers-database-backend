@@ -23,4 +23,8 @@ public interface PlayerService {
     Boolean checkUsernameAlreadyExist(String username);
 
     Boolean checkForDuplicateGameId(String gameId);
+
+    boolean checkPlayerExist(Integer playerId);
+
+    Player findPlayerById(Integer playerId);
 }

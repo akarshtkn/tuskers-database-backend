@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -87,6 +88,18 @@ public class PlayerServiceImpl implements PlayerService {
     public Boolean checkForDuplicateGameId(String gameId) {
         logger.info("Executing business logic to check for duplicate Game Id");
         return playerRepository.countByGameId(gameId) != 0;
+    }
+
+    @Override
+    public boolean checkPlayerExist(Integer playerId) {
+        logger.info("Checking if player exist with id :{}", playerId);
+        return playerRepository.existsById(playerId);
+    }
+
+    @Override
+    public Player findPlayerById(Integer playerId) {
+        return playerRepository.findById(playerId)
+                .orElseThrow(() -> new BadRequestException("Player does not exist with id " + playerId));
     }
 
 }

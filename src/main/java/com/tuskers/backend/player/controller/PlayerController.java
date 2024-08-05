@@ -114,7 +114,7 @@ public class PlayerController {
 
         return new ResponseEntity<>(
                 new PlayerResponseDto(playerListDto, players.getTotalElements(),
-                        players.getNumber(), players.getTotalPages() ), HttpStatus.OK);
+                        players.getNumber(), players.getTotalPages()), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")

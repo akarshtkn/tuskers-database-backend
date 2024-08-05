@@ -1,14 +1,7 @@
 package com.tuskers.backend.player.entity;
 
 import com.tuskers.backend.player.enums.Tournament;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,28 +19,36 @@ public class PlayerStatistics {
     @Column(name = "player_statistics_id")
     private Integer playerStatisticsId;
 
-    @Column(name = "appearance")
-    private Integer appearance;
+    @Column(name = "played")
+    private Integer played;
 
     @Column(name = "win")
     private Integer win;
 
+    @Column(name = "draw")
+    private Integer draw;
+
     @Column(name = "loss")
     private Integer loss;
-
-    @Column(name = "goal_for")
-    private Integer goalFor;
-
-    @Column(name = "goal_against")
-    private Integer goalAgainst;
-
-    @Column(name = "clean_sheet")
-    private Integer cleanSheet;
 
     @Column(name = "tournament")
     private Tournament tournament;
 
+    @Column(name = "points")
+    private Long points;
+
     @ManyToOne
     @JoinColumn(name = "player_id_fk", referencedColumnName = "player_id")
     private Player player;
+
+    public PlayerStatistics(Integer played, Integer win, Integer draw, Integer loss, Tournament tournament,
+                            Long points, Player player) {
+        this.played = played;
+        this.win = win;
+        this.draw = draw;
+        this.loss = loss;
+        this.tournament = tournament;
+        this.points = points;
+        this.player = player;
+    }
 }
