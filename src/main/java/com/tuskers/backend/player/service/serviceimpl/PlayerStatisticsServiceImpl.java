@@ -1,7 +1,6 @@
 package com.tuskers.backend.player.service.serviceimpl;
 
-import com.tuskers.backend.commons.exceptions.BadRequestException;
-import com.tuskers.backend.commons.exceptions.InvalidArgumentException;
+import com.tuskers.backend.commons.exceptions.*;
 import com.tuskers.backend.player.dto.PlayerStatisticsDto;
 import com.tuskers.backend.player.dto.PlayerStatisticsUpdateRequestDto;
 import com.tuskers.backend.player.entity.Player;
@@ -31,7 +30,7 @@ public class PlayerStatisticsServiceImpl implements PlayerStatisticsService {
     @Override
     public PlayerStatisticsDto getIndividualPlayerStatistics(Integer playerId, String tournament) {
         if(!playerService.checkPlayerExist(playerId)) {
-            throw new BadRequestException("Player does not exist with id: " + playerId);
+            throw new PlayerNotFoundException("Player does not exist with id: " + playerId);
         }
         Tournament tournamentFilter = checkAndExtractTournament(tournament);
         return repository.getIndividualPlayerStatisticsByIdAndTournament(playerId, tournamentFilter);
@@ -61,16 +60,17 @@ public class PlayerStatisticsServiceImpl implements PlayerStatisticsService {
 
         Player player = playerService.findPlayerById(playerId);
         if(playerStatisticsId != null) {
-            com.tuskers.backend.player.entity.PlayerStatistics playerStatistics = repository.findById(playerStatisticsId)
-                    .orElseThrow(() -> new BadRequestException("Invalid player statistics id :" + playerStatisticsId));
+            PlayerStatistics playerStatistics = repository.findById(playerStatisticsId)
+                    .orElseThrow(() -> new PlayerStatisticsNotFoundException(
+                            "Invalid player statistics id :" + playerStatisticsId));
             if(!Objects.equals(playerStatistics.getPlayer().getId(), player.getId())) {
                 logger.error("Passed player statistics id :{} does not match with corresponding player id :{}", 
                         playerId, playerStatisticsId);
-                throw new InvalidArgumentException("Passed player statistics id does not match with player id");
+                throw new PlayerMismatchException("Passed player statistics id does not match with player id");
             }
             int draw = statistics.getPlayed() - statistics.getWin() - statistics.getLoss();
 
-            com.tuskers.backend.player.entity.PlayerStatistics updatedPlayerStatistics = new com.tuskers.backend.player.entity.PlayerStatistics(
+            PlayerStatistics updatedPlayerStatistics = new PlayerStatistics(
                     playerStatisticsId,
                     playerStatistics.getPlayed() + statistics.getPlayed(),
                     playerStatistics.getWin() + statistics.getWin(),
@@ -85,7 +85,7 @@ public class PlayerStatisticsServiceImpl implements PlayerStatisticsService {
             Tournament tournamentFilter = checkAndExtractTournament(tournament);
             int draw = statistics.getPlayed() - statistics.getWin() - statistics.getLoss();
 
-            com.tuskers.backend.player.entity.PlayerStatistics newPlayerStatistics = new com.tuskers.backend.player.entity.PlayerStatistics(
+            PlayerStatistics newPlayerStatistics = new PlayerStatistics(
                     statistics.getPlayed(),
                     statistics.getWin(),
                     draw,
@@ -117,7 +117,7 @@ public class PlayerStatisticsServiceImpl implements PlayerStatisticsService {
             tournamentFilter = Tournament.valueOf(tournament);
         } catch (Exception e) {
             logger.error("Invalid tournament filter passed :{}", tournament);
-            throw new BadRequestException("Invalid tournament filter passed " + tournament);
+            throw new InvalidTournamentEnumException("Invalid tournament filter passed " + tournament);
         }
 
         return tournamentFilter;

@@ -1,4 +1,4 @@
-package com.tuskers.backend.commons.configuration;
+package com.tuskers.backend.commons.mappings;
 
 import com.tuskers.backend.player.dto.PlayerStatisticsUpdateResponseDto;
 import com.tuskers.backend.player.entity.PlayerStatistics;
@@ -22,8 +22,7 @@ public class ModelMapperConfig {
 
     public void configurePlayerStatisticsToDtoMapping(ModelMapper modelMapper) {
         modelMapper.typeMap(PlayerStatistics.class, PlayerStatisticsUpdateResponseDto.class)
-                .addMappings(mapper -> {
-                    mapper.map(src -> src.getPlayer().getId(), PlayerStatisticsUpdateResponseDto::setPlayerId);
-                });
+                .addMappings(mapper ->
+                        mapper.map(src -> src.getPlayer().getId(), PlayerStatisticsUpdateResponseDto::setPlayerId));
     }
 }
